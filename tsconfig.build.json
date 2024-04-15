@@ -3,7 +3,6 @@
   "exclude": [
     "node_modules",
     "build",
-    "scripts",
     "../src/**/*.mdx",
     "../src/**/*.stories.@(js|jsx|mjs|ts|tsx)"
   ]

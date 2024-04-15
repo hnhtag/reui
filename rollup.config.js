@@ -5,10 +5,11 @@ import typescript from "@rollup/plugin-typescript";
 import { babel } from "@rollup/plugin-babel";
 import postcss from "rollup-plugin-postcss";
 import autoprefixer from "autoprefixer";
-import { getFiles } from "./scripts/buildUtils";
 import terser from "@rollup/plugin-terser";
+import { visualizer } from "rollup-plugin-visualizer";
+import packageJson from "./package.json" assert { type: "json" };
+import { getFiles } from "./scripts/buildUtils";
 
-const packageJson = require("./package.json");
 const extensions = [".js", ".ts", ".jsx", ".tsx"];
 const excludeExtensions = [
   "test.js",
@@ -21,33 +22,54 @@ const excludeExtensions = [
   "stories.tsx",
 ];
 
-export default {
-  input: [
-    "./src/index.ts",
-    ...getFiles("./src/components", extensions, excludeExtensions),
-  ],
-  output: {
-    dir: "build",
-    format: "esm",
-    preserveModules: true,
-    preserveModulesRoot: "src",
+export default [
+  {
+    input: [
+      "./src/index.ts",
+      ...getFiles("./src/components", extensions, excludeExtensions),
+    ],
+    output: {
+      dir: "build",
+      format: "esm",
+      preserveModules: true,
+      preserveModulesRoot: "src",
+    },
+    plugins: [
+      peerDepsExternal(),
+      resolve(),
+      commonjs(),
+      typescript({
+        tsconfig: "./tsconfig.build.json",
+        sourceMap: false,
+        inlineSources: false,
+      }),
+      babel({
+        exclude: "node_modules/**",
+        babelHelpers: "bundled",
+      }),
+      postcss({
+        plugins: [autoprefixer],
+        modules: true,
+        extract: false,
+        minimize: true,
+        use: ["sass"],
+      }),
+      terser({
+        format: {
+          comments: false,
+        },
+        compress: true,
+      }),
+      visualizer({
+        open: true,
+        openOptions: { wait: true, background: false },
+        gzipSize: true,
+        brotliSize: true,
+      }),
+    ],
+    external: [
+      "react/jsx-runtime",
+      ...Object.keys(packageJson.peerDependencies || {}),
+    ],
   },
-  plugins: [
-    peerDepsExternal(),
-    resolve(),
-    commonjs(),
-    typescript({
-      tsconfig: "./tsconfig.build.json",
-    }),
-    babel({
-      exclude: "node_modules/**",
-      babelHelpers: "bundled",
-    }),
-    postcss({
-      plugins: [autoprefixer],
-      modules: true,
-    }),
-    terser(),
-  ],
-  external: Object.keys(packageJson.peerDependencies || {}),
-};
+];

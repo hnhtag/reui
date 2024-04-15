@@ -13,11 +13,6 @@
     "strictNullChecks": true,
     "skipLibCheck": true,
     "baseUrl": "src/",
-    "paths": {
-      "components": ["src/components/*"]
-    },
-    "declaration": true,
-    "declarationDir": "build",
 
     /* Linting */
     "strict": true,
@@ -27,18 +22,14 @@
 
     /* Bundler mode */
     "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
+    "noEmit": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "react-jsx"
+    "declaration": true,
+    "declarationDir": "build/types",
+    "outDir": "build",
+    "jsx": "react-jsx",
+    "plugins": [{ "name": "typescript-plugin-css-modules" }]
   },
-  "include": ["src/**/*"],
-  "exclude": [
-    "node_modules",
-    "build",
-    "scripts",
-    "src/**/*.stories.tsx",
-    "src/**/*.test.tsx"
-  ]
+  "include": ["./src/**/*"]
 }

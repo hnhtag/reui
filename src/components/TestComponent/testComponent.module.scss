@@ -1,6 +1,8 @@
-.test-component {
+$border-color: black;
+
+.testComponent {
   background-color: white;
-  border: 1px solid black;
+  border: 1px solid $border-color;
   padding: 16px;
   width: 360px;
   text-align: center;
@@ -9,7 +11,7 @@
     font-size: 64px;
   }
 
-  &.test-component-secondary {
+  &.testComponentSecondary {
     background-color: black;
     color: white;
   }
